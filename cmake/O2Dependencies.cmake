@@ -2568,3 +2568,14 @@ o2_define_bucket(
     ${ROOT_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/GPU/TPCSpaceChargeBase
 )
+
+o2_define_bucket(
+    NAME
+    mft_testwf_bucket
+
+    DEPENDENCIES
+    #
+    Framework
+
+    INCLUDE_DIRECTORIES
+)
