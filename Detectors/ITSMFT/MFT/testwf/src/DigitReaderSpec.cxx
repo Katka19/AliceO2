@@ -47,15 +47,26 @@ void DigitReader::run(ProcessingContext& pc)
     return;
 
   std::unique_ptr<TTree> tree((TTree*)mFile->Get("o2sim"));
-  std::unique_ptr<std::vector<ROFRecord>> rofs((std::vector<ROFRecord>*)mFile->Get("MFTDigitROF"));
-  std::unique_ptr<std::vector<MC2ROFRecord>> mc2rofs((std::vector<MC2ROFRecord>*)mFile->Get("MFTDigitMC2ROF"));
+	std::unique_ptr<TTree> treeROF((TTree*)mFile->Get("MFTDigitROF"));
+	std::unique_ptr<TTree> treeMC2ROF((TTree*)mFile->Get("MFTDigitMC2ROF"));
+  //std::unique_ptr<std::vector<ROFRecord>> rofs((std::vector<ROFRecord>*)mFile->Get("MFTDigitROF"));
+  //std::unique_ptr<std::vector<MC2ROFRecord>> mc2rofs((std::vector<MC2ROFRecord>*)mFile->Get("MFTDigitMC2ROF"));
   if (tree && rofs && mc2rofs) {
     std::vector<o2::ITSMFT::Digit> allDigits;
     std::vector<o2::ITSMFT::Digit> digits, *pdigits = &digits;
     tree->SetBranchAddress("MFTDigit", &pdigits);
+
     o2::dataformats::MCTruthContainer<o2::MCCompLabel> allLabels;
     o2::dataformats::MCTruthContainer<o2::MCCompLabel> labels, *plabels = &labels;
     tree->SetBranchAddress("MFTDigitMCTruth", &plabels);
+
+		std::vector<ROFRecord> rofs, *profs = &rofs;
+    treeROF->SetBranchAddress("MFTDigitROF", &profs);
+    treeROF->GetEntry(0);
+
+    std::vector<MC2ROFRecord> mc2rofs, *pmc2rofs = &mc2rofs;
+    treeMC2ROF->SetBranchAddress("MFTDigitMC2ROF", &pmc2rofs);
+    treeMC2ROF->GetEntry(0);
 
     int ne = tree->GetEntries();
     for (int e = 0; e < ne; e++) {
