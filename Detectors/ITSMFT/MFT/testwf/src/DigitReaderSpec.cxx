@@ -12,7 +12,7 @@
 
 #include <vector>
 
-#include "MFTTestwf/DigitReaderSpec.h"
+#include "MFTWorkflow/DigitReaderSpec.h"
 
 #include "TTree.h"
 #include "Framework/ControlService.h"
@@ -22,7 +22,7 @@
 #include "DataFormatsITSMFT/ROFRecord.h"
 
 using namespace o2::framework;
-using namespace o2::ITSMFT;
+using namespace o2::itsmft;
 
 namespace o2
 {
@@ -88,7 +88,7 @@ void DigitReader::run(ProcessingContext& pc)
   mState = 2;
   //pc.services().get<ControlService>().readyToQuit(true);
 }
-  
+ 
 DataProcessorSpec getDigitReaderSpec()
 {
   return DataProcessorSpec{
@@ -106,4 +106,4 @@ DataProcessorSpec getDigitReaderSpec()
 }
 
 } // namespace MFT
-} // namespace o2
+} // namespace o2 
