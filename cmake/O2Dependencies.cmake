@@ -2576,6 +2576,8 @@ o2_define_bucket(
     DEPENDENCIES
     #
     Framework
+    ITSMFTBase
+    DataFormatsITSMFT
 
     INCLUDE_DIRECTORIES
 )
