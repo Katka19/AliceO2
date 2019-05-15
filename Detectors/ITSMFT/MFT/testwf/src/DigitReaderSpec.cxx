@@ -12,7 +12,7 @@
 
 #include <vector>
 
-#include "MFTWorkflow/DigitReaderSpec.h"
+#include "MFTTestwf/DigitReaderSpec.h"
 
 #include "TTree.h"
 #include "Framework/ControlService.h"
