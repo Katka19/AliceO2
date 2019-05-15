@@ -46,21 +46,21 @@ void DigitReader::run(ProcessingContext& pc)
   if (mState != 1)
     return;
 
-  std::unique_ptr<TTree> tree((TTree*)mFile->Get("o2sim"));
-	std::unique_ptr<TTree> treeROF((TTree*)mFile->Get("MFTDigitROF"));
-	std::unique_ptr<TTree> treeMC2ROF((TTree*)mFile->Get("MFTDigitMC2ROF"));
-  //std::unique_ptr<std::vector<ROFRecord>> rofs((std::vector<ROFRecord>*)mFile->Get("MFTDigitROF"));
-  //std::unique_ptr<std::vector<MC2ROFRecord>> mc2rofs((std::vector<MC2ROFRecord>*)mFile->Get("MFTDigitMC2ROF"));
-  if (tree && rofs && mc2rofs) {
-    std::vector<o2::ITSMFT::Digit> allDigits;
-    std::vector<o2::ITSMFT::Digit> digits, *pdigits = &digits;
-    tree->SetBranchAddress("MFTDigit", &pdigits);
+  std::unique_ptr<TTree> treeDig((TTree*)mFile->Get("o2sim"));
+  std::unique_ptr<TTree> treeROF((TTree*)mFile->Get("MFTDigitROF"));
+  std::unique_ptr<TTree> treeMC2ROF((TTree*)mFile->Get("MFTDigitMC2ROF"));
+
+  if (treeDig && treeROF && treeMC2ROF) {
+
+    std::vector<o2::itsmft::Digit> allDigits;
+    std::vector<o2::itsmft::Digit> digits, *pdigits = &digits;
+    treeDig->SetBranchAddress("MFTDigit", &pdigits);
 
     o2::dataformats::MCTruthContainer<o2::MCCompLabel> allLabels;
     o2::dataformats::MCTruthContainer<o2::MCCompLabel> labels, *plabels = &labels;
-    tree->SetBranchAddress("MFTDigitMCTruth", &plabels);
+    treeDig->SetBranchAddress("MFTDigitMCTruth", &plabels);
 
-		std::vector<ROFRecord> rofs, *profs = &rofs;
+    std::vector<ROFRecord> rofs, *profs = &rofs;
     treeROF->SetBranchAddress("MFTDigitROF", &profs);
     treeROF->GetEntry(0);
 
@@ -68,25 +68,25 @@ void DigitReader::run(ProcessingContext& pc)
     treeMC2ROF->SetBranchAddress("MFTDigitMC2ROF", &pmc2rofs);
     treeMC2ROF->GetEntry(0);
 
-    int ne = tree->GetEntries();
-    for (int e = 0; e < ne; e++) {
-      tree->GetEntry(e);
+    Int_t ne = treeDig->GetEntries();
+    for (Int_t e = 0; e < ne; e++) {
+      treeDig->GetEntry(e);
       std::copy(digits.begin(), digits.end(), std::back_inserter(allDigits));
       allLabels.mergeAtBack(labels);
     }
     LOG(INFO) << "MFTDigitReader pushed " << allDigits.size() << " digits, in "
-              << rofs->size() << " RO frames and "
-              << mc2rofs->size() << " MC events";
+              << profs->size() << " RO frames and "
+              << pmc2rofs->size() << " MC events";
     pc.outputs().snapshot(Output{ "MFT", "DIGITS", 0, Lifetime::Timeframe }, allDigits);
     pc.outputs().snapshot(Output{ "MFT", "DIGITSMCTR", 0, Lifetime::Timeframe }, allLabels);
-    pc.outputs().snapshot(Output{ "MFT", "MFTDigitROF", 0, Lifetime::Timeframe }, *rofs.get());
-    pc.outputs().snapshot(Output{ "MFT", "MFTDigitMC2ROF", 0, Lifetime::Timeframe }, *mc2rofs.get());
+    pc.outputs().snapshot(Output{ "MFT", "MFTDigitROF", 0, Lifetime::Timeframe }, *profs);
+    pc.outputs().snapshot(Output{ "MFT", "MFTDigitMC2ROF", 0, Lifetime::Timeframe }, *pmc2rofs);
   } else {
     LOG(ERROR) << "Cannot read the MFT digits !";
     return;
   }
   mState = 2;
-  pc.services().get<ControlService>().readyToQuit(true);
+  //pc.services().get<ControlService>().readyToQuit(true);
 }
   
 DataProcessorSpec getDigitReaderSpec()
