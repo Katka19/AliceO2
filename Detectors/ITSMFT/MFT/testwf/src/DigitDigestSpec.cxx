@@ -22,7 +22,7 @@
 #include "DataFormatsITSMFT/ROFRecord.h"
 
 using namespace o2::framework;
-using namespace o2::ITSMFT;
+using namespace o2::itsmft;
 
 namespace o2
 {
@@ -42,7 +42,7 @@ void DigitDigest::run(ProcessingContext& pc)
   auto mftDigest = pc.outputs().make<Digest>(OutputRef{"digitdigest"}, 1);
   mftDigest.at(0).inputCount = pc.inputs().size();
 	
-  auto digits = pc.inputs().get<const std::vector<o2::ITSMFT::Digit>>("digits");
+  auto digits = pc.inputs().get<const std::vector<o2::itsmft::Digit>>("digits");
   mftDigest.at(0).digitsCount = digits.size();
 
   mState = 2;
