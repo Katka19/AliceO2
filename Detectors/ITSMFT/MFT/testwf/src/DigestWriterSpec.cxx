@@ -69,7 +69,7 @@ void DigestWriter::run(ProcessingContext& pc)
   //ofs.close();
   
   mState = 2;
-  pc.services().get<ControlService>().readyToQuit(true);
+  //pc.services().get<ControlService>().readyToQuit(true);
 }
 
 DataProcessorSpec getDigestWriterSpec()

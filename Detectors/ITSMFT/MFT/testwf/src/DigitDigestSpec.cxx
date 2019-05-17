@@ -46,7 +46,7 @@ void DigitDigest::run(ProcessingContext& pc)
   mftDigest.at(0).digitsCount = digits.size();
 
   mState = 2;
-  pc.services().get<ControlService>().readyToQuit(true);
+  //pc.services().get<ControlService>().readyToQuit(true);
 }
 
 DataProcessorSpec getDigitDigestSpec()
